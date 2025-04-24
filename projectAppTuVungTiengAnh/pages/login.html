@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+    <!-- Form đăng nhập -->
+    <div id="login" class="form-container">
+        <h2>Đăng nhập</h2>
+        <input type="text" id="loginUsername" placeholder="Email" required />
+        <input type="password" id="loginPassword" placeholder="Mật khẩu" required />
+        <button onclick="login()">Đăng nhập</button>
+        <!-- Hiển thị thông báo lỗi -->
+        <p id="loginMessage" style="color: red; margin-top: 10px;"></p>
+        <p>
+            <a href="register.html" onclick="register()">Chưa có tài khoản? Đăng ký</a>
+        </p>
+    </div>
+    <script src="../js/auth.js"></script>
+</body>
+
+</html>

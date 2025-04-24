@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocabApp - Login</title>
+    <link rel="stylesheet" href="../projectAppTuVungTiengAnh/css/login.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="brand">VocabApp</div>
+        <div class="nav-buttons">
+            <a href="../projectAppTuVungTiengAnh/pages/login.html"><button class="login-btn">Login</button></a>
+            <a href="../projectAppTuVungTiengAnh/pages/register.html"><button class="register-btn">Register</button></a>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <input type="email" id="loginUsername" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <a href="../projectAppTuVungTiengAnh/pages/home.html"><button onclick="login()">Login</button></a>
+            <p id="loginMessage" class="error-message"></p> <!-- Thêm thông báo lỗi -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        © 2024 VocabApp. All rights reserved.
+    </footer>
+
+    <script src="../projectAppTuVungTiengAnh/js/auth.js"></script>
+</body>
+</html>

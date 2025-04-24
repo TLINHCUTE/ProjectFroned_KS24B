@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocabApp - Categories</title>
+    <link rel="stylesheet" href="../css/home.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="brand">VocabApp</div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="categories.html">Categories</a>
+            <a href="vocabulary.html" class="active">Vocabulary</a>
+            <a href="flashcards.html">Flashcards</a>
+            <a href="quiz.html">Quiz</a>
+            <button id="logoutBtn" aria-label="Log out">Đăng xuất</button>
+        </div>
+    </nav>
+
+    <!-- Vocabulary Table -->
+    <table class="vocab-table">
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Meaning</th>
+                <th>Category</th>
+                <th>Example</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button class="prev-btn" aria-label="Previous page">Previous</button>
+        <span class="page-number">1</span>
+        <button class="next-btn" aria-label="Next page">Next</button>
+    </div>
+
+    <!-- Footer -->
+    <footer style="text-align: center; margin-top: 40px;">
+        © 2024 VocabApp. All rights reserved.
+    </footer>
+
+    <script src="../js/vocabulary.js"></script>
+</body>
+
+</html>
