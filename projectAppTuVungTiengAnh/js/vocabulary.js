@@ -1,13 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let vocabTableBody = document.querySelector("tbody");
-    let prevBtn = document.querySelector(".prev-btn");
-    let nextBtn = document.querySelector(".next-btn");
-    let pageNumberDisplay = document.querySelector(".page-number");
-    let itemsPerPage = 5;
+    const vocabTableBody = document.querySelector("tbody");
+    const prevBtn = document.querySelector(".prev-btn");
+    const nextBtn = document.querySelector(".next-btn");
+    const pageNumberDisplay = document.querySelector(".page-number");
+    const itemsPerPage = 5;
     let currentPage = 1;
     let searchKeyword = "";
+    let editingIndex = null;
+
     function loadVocabList() {
-        let saved = localStorage.getItem("vocabList");
+        const saved = localStorage.getItem("vocabList");
         return saved ? JSON.parse(saved) : [
             { word: "Lion", meaning: "A large wild cat", category: "Animals", example: "The lion roared loudly." },
             { word: "Laptop", meaning: "A portable computer", category: "Technology", example: "She works on her laptop." },
@@ -17,48 +19,45 @@ document.addEventListener("DOMContentLoaded", () => {
             { word: "Tablet", meaning: "A touch-screen device", category: "Technology", example: "I read books on my tablet." }
         ];
     }
+
     let vocabList = loadVocabList();
+
     function saveVocabList() {
         localStorage.setItem("vocabList", JSON.stringify(vocabList));
     }
-    document.getElementById("addVocabBtn").addEventListener("click", () => {
-        let word = document.getElementById("newWord").value.trim();
-        let meaning = document.getElementById("newMeaning").value.trim();
-        let category = document.getElementById("newCategory").value.trim();
-        let example = document.getElementById("newExample").value.trim();
-        if (word && meaning && category) {
-            vocabList.push({ word, meaning, category, example });
-            saveVocabList();
-            currentPage = Math.ceil(vocabList.length / itemsPerPage);
-            renderTable();
-            document.getElementById("newWord").value = "";
-            document.getElementById("newMeaning").value = "";
-            document.getElementById("newCategory").value = "";
-            document.getElementById("newExample").value = "";
-        } else {
-            alert("Please fill in at least Word, Meaning, and Category.");
-        }
+
+    const addVocabModal = document.getElementById("addVocabModal");
+
+    function openModal() {
+        addVocabModal.style.display = "flex";
+        document.body.classList.add("body-no-scroll");
+    }
+
+    function closeModal() {
+        addVocabModal.style.display = "none";
+        document.body.classList.remove("body-no-scroll");
+    }
+
+    window.addEventListener("click", (e) => {
+        if (e.target === addVocabModal) closeModal();
     });
-    document.getElementById("searchInput").addEventListener("input", (e) => {
-        searchKeyword = e.target.value.trim().toLowerCase();
-        currentPage = 1;
-        renderTable();
-    });
+
     function renderTable() {
         vocabTableBody.innerHTML = "";
-        let filteredList = vocabList.filter(item =>
+        const filteredList = vocabList.filter(item => 
             item.word.toLowerCase().includes(searchKeyword) ||
             item.meaning.toLowerCase().includes(searchKeyword) ||
             item.category.toLowerCase().includes(searchKeyword) ||
             item.example.toLowerCase().includes(searchKeyword)
         );
-        let start = (currentPage - 1) * itemsPerPage;
-        let paginated = filteredList.slice(start, start + itemsPerPage);
+        const start = (currentPage - 1) * itemsPerPage;
+        const paginated = filteredList.slice(start, start + itemsPerPage);
+
         if (paginated.length === 0) {
             vocabTableBody.innerHTML = `<tr><td colspan="5">No vocabulary entries found.</td></tr>`;
         } else {
-            paginated.forEach((item, index) => {
-                let row = document.createElement("tr");
+            paginated.forEach((item) => {
+                const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${item.word}</td>
                     <td>${item.meaning}</td>
@@ -74,51 +73,62 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         pageNumberDisplay.textContent = currentPage;
     }
+
     window.editVocab = (index) => {
-        let item = vocabList[index];
-        let newWord = prompt("Edit word:", item.word);
-        let newMeaning = prompt("Edit meaning:", item.meaning);
-        let newCategory = prompt("Edit category:", item.category);
-        let newExample = prompt("Edit example (optional):", item.example);
-        if (newWord) {
-            vocabList[index] = {
-                word: newWord,
-                meaning: newMeaning,
-                category: newCategory,
-                example: newExample || ""
-            };
-            saveVocabList();
-            renderTable();
-        }
+        const item = vocabList[index];
+        document.getElementById("newWord").value = item.word;
+        document.getElementById("newMeaning").value = item.meaning;
+        document.getElementById("newCategory").value = item.category;
+        document.getElementById("newExample").value = item.example;
+
+        openModal();
+        editingIndex = index;
+        document.getElementById("saveVocabBtn").textContent = "Update Word";
+        document.getElementById("deleteVocabBtn").style.display = "inline-block";
+        document.getElementById("deleteVocabBtn").onclick = () => deleteVocab(index);
     };
-    window.deleteVocab = (index) => {
-        if (confirm("Are you sure you want to delete this vocabulary?")) {
-            vocabList.splice(index, 1);
-            saveVocabList();
-            if ((currentPage - 1) * itemsPerPage >= vocabList.length) {
-                currentPage = Math.max(1, currentPage - 1);
+
+    function deleteVocab(index) {
+        vocabList.splice(index, 1);
+        saveVocabList();
+        renderTable();
+    }
+
+    document.getElementById("saveVocabBtn").onclick = () => {
+        const word = document.getElementById("newWord").value.trim();
+        const meaning = document.getElementById("newMeaning").value.trim();
+        const category = document.getElementById("newCategory").value.trim();
+        const example = document.getElementById("newExample").value.trim();
+
+        if (word && meaning && category) {
+            if (editingIndex !== null) {
+                vocabList[editingIndex] = { word, meaning, category, example };
+                editingIndex = null;
+            } else {
+                vocabList.push({ word, meaning, category, example });
             }
+            saveVocabList();
             renderTable();
+            closeModal();
+        } else {
+            alert("Please fill in at least Word, Meaning, and Category.");
         }
     };
+
     prevBtn.addEventListener("click", () => {
         if (currentPage > 1) {
             currentPage--;
             renderTable();
         }
     });
+
     nextBtn.addEventListener("click", () => {
-        let totalPages = Math.ceil(
-            vocabList.filter(item =>
-                item.word.toLowerCase().includes(searchKeyword) ||
-                item.meaning.toLowerCase().includes(searchKeyword) ||
-                item.category.toLowerCase().includes(searchKeyword) ||
-                item.example.toLowerCase().includes(searchKeyword)
-            ).length / itemsPerPage);
+        const totalPages = Math.ceil(vocabList.length / itemsPerPage);
         if (currentPage < totalPages) {
             currentPage++;
             renderTable();
         }
     });
+
     renderTable();
 });

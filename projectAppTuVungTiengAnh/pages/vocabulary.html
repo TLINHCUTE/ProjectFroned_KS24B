@@ -2,15 +2,13 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VocabApp - Categories</title>
-    <link rel="stylesheet" href="../css/home.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VocabApp - Vocabulary</title>
+    <link rel="stylesheet" href="../css/home.css" />
 </head>
 
 <body>
-
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="brand">VocabApp</div>
         <div class="nav-links">
@@ -19,55 +17,70 @@
             <a href="vocabulary.html" class="active">Vocabulary</a>
             <a href="flashcards.html">Flashcards</a>
             <a href="quiz.html">Quiz</a>
-            <button id="logoutBtn" aria-label="Log out">Đăng xuất</button>
+            <button id="logoutBtn" aria-label="Log out">Log Out</button>
         </div>
     </nav>
 
-    <!-- Add Vocabulary Form -->
-    <div style="margin: 20px 0; text-align: center;">
-        <input type="text" id="newWord" placeholder="Word">
-        <input type="text" id="newMeaning" placeholder="Meaning">
-        <input type="text" id="newCategory" placeholder="Category">
-        <input type="text" id="newExample" placeholder="Example (optional)">
-        <button id="addVocabBtn">Add Word</button>
-    </div>
+    <main>
+        <div class="vocab-actions">
+            <button id="openAddVocabModalBtn" class="action-btn">Add New Vocabulary</button>
+        </div>
 
-    <!-- Search Input -->
-    <div style="margin: 20px 0; text-align: center;">
-        <input type="text" id="searchInput" placeholder="Search vocabulary...">
-    </div>
+        <!-- Add/Edit Vocabulary Modal -->
+        <div id="addVocabModal" class="modal">
+            <div class="modal-content">
+                <h2 id="modalTitle">Add New Vocabulary Entry</h2>
 
-    <!-- Vocabulary Table -->
-    <table class="vocab-table">
-        <thead>
-            <tr>
-                <th>Word</th>
-                <th>Meaning</th>
-                <th>Category</th>
-                <th>Example</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Rows will be dynamically inserted here -->
-        </tbody>
-    </table>
+                <label for="newWord">Word:</label>
+                <input type="text" id="newWord" placeholder="Enter word" aria-required="true" />
 
-    <!-- Pagination -->
-    <div class="pagination">
-        <button class="prev-btn" aria-label="Previous page">Previous</button>
-        <span class="page-number">1</span>
-        <button class="next-btn" aria-label="Next page">Next</button>
-    </div>
+                <label for="newMeaning">Meaning:</label>
+                <input type="text" id="newMeaning" placeholder="Enter meaning" aria-required="true" />
 
-    <!-- Footer -->
-    <footer style="text-align: center; margin-top: 40px;">
-        © 2024 VocabApp. All rights reserved.
+                <label for="newCategory">Category:</label>
+                <input type="text" id="newCategory" placeholder="Enter category" aria-required="true" />
+
+                <label for="newExample">Example (optional):</label>
+                <input type="text" id="newExample" placeholder="Enter example" />
+
+                <div class="modal-buttons" style="margin-top: 20px;">
+                    <button id="saveVocabBtn">Save Word</button>
+                    <button id="deleteVocabBtn"
+                        style="display: none; background-color: #f44336; color: white;">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search vocabulary..." aria-label="Search vocabulary" />
+        </div>
+
+        <table class="vocab-table">
+            <thead>
+                <tr>
+                    <th>Word</th>
+                    <th>Meaning</th>
+                    <th>Category</th>
+                    <th>Example</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="pagination">
+            <button class="prev-btn" aria-label="Previous page">Previous</button>
+            <span class="page-number">1</span>
+            <button class="next-btn" aria-label="Next page">Next</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 VocabApp. All rights reserved.</p>
     </footer>
 
     <script src="../js/vocabulary.js"></script>
     <script src="../js/auth.js"></script>
-
 </body>
 
 </html>
