@@ -1,134 +1,201 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const vocabTableBody = document.querySelector("tbody");
-    const prevBtn = document.querySelector(".prev-btn");
-    const nextBtn = document.querySelector(".next-btn");
-    const pageNumberDisplay = document.querySelector(".page-number");
-    const itemsPerPage = 5;
-    let currentPage = 1;
-    let searchKeyword = "";
-    let editingIndex = null;
+// Khai báo các biến ngoài cùng
+let vocabList = [];
+let currentPage = 1;
+const itemsPerPage = 5;
+let editingIndex = null;
+let categories = [];
 
-    function loadVocabList() {
-        const saved = localStorage.getItem("vocabList");
-        return saved ? JSON.parse(saved) : [
-            { word: "Lion", meaning: "A large wild cat", category: "Animals", example: "The lion roared loudly." },
-            { word: "Laptop", meaning: "A portable computer", category: "Technology", example: "She works on her laptop." },
-            { word: "Tiger", meaning: "Another big cat", category: "Animals", example: "Tigers are endangered species." },
-            { word: "Mouse", meaning: "Computer accessory", category: "Technology", example: "Click with the mouse." },
-            { word: "Dog", meaning: "A domestic animal", category: "Animals", example: "Dogs are loyal pets." },
-            { word: "Tablet", meaning: "A touch-screen device", category: "Technology", example: "I read books on my tablet." }
-        ];
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    // Get DOM elements
+    const openAddVocabModalBtn = document.getElementById('openAddVocabModalBtn');
+    const saveVocabBtn = document.getElementById('saveVocabBtn');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
 
-    let vocabList = loadVocabList();
+    // Attach event listeners
+    if (openAddVocabModalBtn) openAddVocabModalBtn.addEventListener('click', openAddVocabModal);
+    if (saveVocabBtn) saveVocabBtn.addEventListener('click', saveVocab);
+    if (searchInput) searchInput.addEventListener('input', searchVocabulary);
+    if (categoryFilter) categoryFilter.addEventListener('change', filterByCategory);
+    if (confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', confirmDelete);
+    if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', cancelDelete);
 
-    function saveVocabList() {
-        localStorage.setItem("vocabList", JSON.stringify(vocabList));
-    }
-
-    const addVocabModal = document.getElementById("addVocabModal");
-
-    function openModal() {
-        addVocabModal.style.display = "flex";
-        document.body.classList.add("body-no-scroll");
-    }
-
-    function closeModal() {
-        addVocabModal.style.display = "none";
-        document.body.classList.remove("body-no-scroll");
-    }
-
-    window.addEventListener("click", (e) => {
-        if (e.target === addVocabModal) closeModal();
-    });
-
-    function renderTable() {
-        vocabTableBody.innerHTML = "";
-        const filteredList = vocabList.filter(item => 
-            item.word.toLowerCase().includes(searchKeyword) ||
-            item.meaning.toLowerCase().includes(searchKeyword) ||
-            item.category.toLowerCase().includes(searchKeyword) ||
-            item.example.toLowerCase().includes(searchKeyword)
-        );
-        const start = (currentPage - 1) * itemsPerPage;
-        const paginated = filteredList.slice(start, start + itemsPerPage);
-
-        if (paginated.length === 0) {
-            vocabTableBody.innerHTML = `<tr><td colspan="5">No vocabulary entries found.</td></tr>`;
-        } else {
-            paginated.forEach((item) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${item.word}</td>
-                    <td>${item.meaning}</td>
-                    <td>${item.category}</td>
-                    <td>${item.example}</td>
-                    <td>
-                        <button onclick="editVocab(${vocabList.indexOf(item)})">Edit</button>
-                        <button onclick="deleteVocab(${vocabList.indexOf(item)})">Delete</button>
-                    </td>
-                `;
-                vocabTableBody.appendChild(row);
-            });
-        }
-        pageNumberDisplay.textContent = currentPage;
-    }
-
-    window.editVocab = (index) => {
-        const item = vocabList[index];
-        document.getElementById("newWord").value = item.word;
-        document.getElementById("newMeaning").value = item.meaning;
-        document.getElementById("newCategory").value = item.category;
-        document.getElementById("newExample").value = item.example;
-
-        openModal();
-        editingIndex = index;
-        document.getElementById("saveVocabBtn").textContent = "Update Word";
-        document.getElementById("deleteVocabBtn").style.display = "inline-block";
-        document.getElementById("deleteVocabBtn").onclick = () => deleteVocab(index);
-    };
-
-    function deleteVocab(index) {
-        vocabList.splice(index, 1);
-        saveVocabList();
-        renderTable();
-    }
-
-    document.getElementById("saveVocabBtn").onclick = () => {
-        const word = document.getElementById("newWord").value.trim();
-        const meaning = document.getElementById("newMeaning").value.trim();
-        const category = document.getElementById("newCategory").value.trim();
-        const example = document.getElementById("newExample").value.trim();
-
-        if (word && meaning && category) {
-            if (editingIndex !== null) {
-                vocabList[editingIndex] = { word, meaning, category, example };
-                editingIndex = null;
-            } else {
-                vocabList.push({ word, meaning, category, example });
-            }
-            saveVocabList();
-            renderTable();
-            closeModal();
-        } else {
-            alert("Please fill in at least Word, Meaning, and Category.");
-        }
-    };
-
-    prevBtn.addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderTable();
-        }
-    });
-
-    nextBtn.addEventListener("click", () => {
-        const totalPages = Math.ceil(vocabList.length / itemsPerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderTable();
-        }
-    });
-
-    renderTable();
+    // Render ban đầu
+    renderVocabTable();
 });
+
+function openAddVocabModal() {
+    document.getElementById('addVocabModal').style.display = 'block';
+    clearForm();
+    document.getElementById('saveVocabBtn').style.display = 'inline-block';
+    document.getElementById('deleteVocabBtn').style.display = 'none';
+}
+
+function closeVocabModal() {
+    document.getElementById('addVocabModal').style.display = 'none';
+}
+
+function clearForm() {
+    document.getElementById('newWord').value = '';
+    document.getElementById('newMeaning').value = '';
+    document.getElementById('newCategory').value = '';
+    document.getElementById('newExample').value = '';
+}
+
+function saveVocab(event) {
+    event.preventDefault();
+    const word = document.getElementById('newWord').value.trim();
+    const meaning = document.getElementById('newMeaning').value.trim();
+    const category = document.getElementById('newCategory').value.trim();
+    const example = document.getElementById('newExample').value.trim();
+
+    if (word && meaning && category) {
+        const newVocab = { word, meaning, category, example };
+
+        if (!categories.includes(category)) {
+            categories.push(category);
+            updateCategoryFilter();
+        }
+
+        if (editingIndex !== null) {
+            vocabList[editingIndex] = newVocab;
+        } else {
+            vocabList.push(newVocab);
+        }
+
+        renderVocabTable();
+        closeVocabModal();
+    }
+}
+
+function updateCategoryFilter() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (!categoryFilter) return;
+
+    categoryFilter.innerHTML = `<option value="">All Categories</option>`;
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+}
+
+function renderVocabTable(page = 1) {
+    currentPage = page;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedVocab = vocabList.slice(startIndex, startIndex + itemsPerPage);
+
+    const tableBody = document.querySelector('.vocab-table tbody');
+    tableBody.innerHTML = '';
+
+    paginatedVocab.forEach((vocab, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${vocab.word}</td>
+            <td>${vocab.meaning}</td>
+            <td>${vocab.category}</td>
+            <td>${vocab.example || 'N/A'}</td>
+            <td>
+                <button onclick="openEditVocabModal(${startIndex + index})">Edit</button>
+                <button onclick="openDeleteVocabModal(${startIndex + index})">Delete</button>
+            </td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+
+    renderPagination();
+}
+
+function renderPagination() {
+    const totalPages = Math.ceil(vocabList.length / itemsPerPage);
+    const pageNumberElement = document.querySelector('.page-number');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+
+    if (!pageNumberElement || !prevBtn || !nextBtn) return;
+
+    pageNumberElement.textContent = currentPage;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+
+    prevBtn.onclick = () => renderVocabTable(currentPage - 1);
+    nextBtn.onclick = () => renderVocabTable(currentPage + 1);
+}
+
+function searchVocabulary(event) {
+    const query = event.target.value.toLowerCase();
+    const filteredVocab = vocabList.filter(vocab =>
+        vocab.word.toLowerCase().includes(query) ||
+        vocab.meaning.toLowerCase().includes(query) ||
+        vocab.category.toLowerCase().includes(query) ||
+        (vocab.example && vocab.example.toLowerCase().includes(query))
+    );
+    renderFilteredVocab(filteredVocab);
+}
+
+function filterByCategory() {
+    const selectedCategory = document.getElementById('categoryFilter').value;
+    const filteredVocab = selectedCategory
+        ? vocabList.filter(vocab => vocab.category === selectedCategory)
+        : vocabList;
+    renderFilteredVocab(filteredVocab);
+}
+
+function renderFilteredVocab(filteredVocab) {
+    const tableBody = document.querySelector('.vocab-table tbody');
+    tableBody.innerHTML = '';
+
+    filteredVocab.forEach((vocab, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${vocab.word}</td>
+            <td>${vocab.meaning}</td>
+            <td>${vocab.category}</td>
+            <td>${vocab.example || 'N/A'}</td>
+            <td>
+                <button onclick="openEditVocabModal(${index})">Edit</button>
+                <button onclick="openDeleteVocabModal(${index})">Delete</button>
+            </td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+}
+
+function openEditVocabModal(index) {
+    editingIndex = index;
+    const vocab = vocabList[index];
+
+    document.getElementById('newWord').value = vocab.word;
+    document.getElementById('newMeaning').value = vocab.meaning;
+    document.getElementById('newCategory').value = vocab.category;
+    document.getElementById('newExample').value = vocab.example || '';
+
+    document.getElementById('addVocabModal').style.display = 'block';
+    document.getElementById('saveVocabBtn').style.display = 'inline-block';
+    document.getElementById('deleteVocabBtn').style.display = 'inline-block';
+}
+
+function openDeleteVocabModal(index) {
+    editingIndex = index;
+    document.getElementById('deleteVocabModal').style.display = 'block';
+}
+
+function confirmDelete() {
+    if (editingIndex !== null) {
+        vocabList.splice(editingIndex, 1);
+        renderVocabTable(currentPage);
+        document.getElementById('deleteVocabModal').style.display = 'none';
+        editingIndex = null;
+    }
+}
+
+function cancelDelete() {
+    document.getElementById('deleteVocabModal').style.display = 'none';
+}

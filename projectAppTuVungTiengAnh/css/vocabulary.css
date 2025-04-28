@@ -1,5 +1,141 @@
-/* General Styles */
-body {
+/* --- 📌 Hiển thị modal khi mở --- */
+.modal_vocabulary-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Nền tối mờ giúp người dùng tập trung vào modal */
+    z-index: 999;
+}
+
+/* --- 📌 Nội dung modal --- */
+.modal_vocabulary {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 420px;
+    background: #f8f9fa; /* Màu nền nhẹ hơn */
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 25px;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+/* 🖥️ Hiệu ứng mở modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* 🎬 Hiệu ứng xuất hiện nội dung modal */
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* --- 📌 Tiêu đề modal --- */
+.modal-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 📝 Điều chỉnh ô nhập liệu */
+.modal_vocabulary input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* --- 📌 Căn chỉnh nút lưu/xóa --- */
+.modal_vocabulary-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* 🔘 Nút chung */
+.modal_vocabulary-buttons .btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+/* 🎭 Hiệu ứng hover */
+.modal_vocabulary-buttons .btn:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ Nút "Save Word" */
+.btn-save {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
+
+/* ❌ Nút "Delete" */
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
+
+/* ✖️ Nút đóng modal */
+.modal_vocabulary .close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.modal_vocabulary .close:hover {
+    color: #000;
+}
+
+/* 🎬 Hiển thị modal khi mở */
+.modal_vocabulary.active, .modal_vocabulary-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+ody {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -72,82 +208,6 @@ h2 {
 .btn-green:hover {
     background-color: #27ae60;
 }
-
-/* Category Table */
-.category-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.category-table th,
-.category-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-}
-
-.category-table th {
-    background-color: #2f80ed;
-    color: white;
-    font-weight: 600;
-}
-
-.category-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-/* Category Link */
-.category-link {
-    color: #3498db;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-.category-link:hover {
-    color: #2f80ed;
-    text-decoration: underline;
-}
-
-/* Buttons inside Category Table */
-.category-table button.edit-btn {
-    background-color: #3498db;
-    /* Blue Edit */
-    color: white;
-    padding: 6px 12px;
-    margin-right: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.category-table button.edit-btn:hover {
-    background-color: #2980b9;
-}
-
-.category-table button.delete-btn {
-    background-color: #e74c3c;
-    /* Red Delete */
-    color: white;
-    padding: 6px 12px;
-    margin-right: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.category-table button.delete-btn:hover {
-    background-color: #c0392b;
-}
-
 /* Vocabulary Table */
 .vocab-table {
     width: 100%;
@@ -422,35 +482,3 @@ footer {
     background-color: #5a6268;
     transform: scale(1.05);
 }
-
-/* Hero Section */
-.hero {
-    text-align: center;
-    padding: 80px 20px;
-    background-size: cover;
-    color: rgb(4, 4, 4);
-}
-
-/* Tiêu đề */
-.hero h1 {
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-/* Mô tả */
-.hero p {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    padding: 15px;
-    background-color: #222;
-    color: white;
-}
-

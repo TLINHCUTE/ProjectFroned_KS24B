@@ -1,112 +1,228 @@
+let editingIndex = null; // Declare globally
+
+// Wait for the DOM to be fully loaded before executing any JavaScript
 document.addEventListener("DOMContentLoaded", () => {
-    // Lấy phần thân bảng, ô tìm kiếm và nút "Thêm danh mục"
     let categoryTableBody = document.querySelector("tbody");
+    let addCategoryBtn = document.getElementById("openAddCategoryModalBtn");
     let searchInput = document.querySelector(".search-bar");
-    let addButton = document.querySelector(".btn-green");
+    let prevBtn = document.querySelector(".prev-btn");
+    let nextBtn = document.querySelector(".next-btn");
+    let pageNumberDisplay = document.querySelector(".page-number");
 
-    // Mảng lưu danh sách danh mục
-    let categories = [];
+    let addCategoryModal = document.getElementById("addCategoryModal");
+    let deleteCategoryModal = document.getElementById("deleteCategoryModal");
+    let confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    let cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+    let saveBtn = document.getElementById("saveCategoryBtn");
+    let deleteBtn = document.getElementById("deleteCategoryBtn");
 
-    // Phân trang
-    let currentPage = 1;
     let itemsPerPage = 5;
+    let currentPage = 1;
+    let searchKeyword = "";
 
-    // Hàm hiển thị bảng danh mục
-    function renderTable(data) {
+    function loadCategoryList() {
+        const saved = localStorage.getItem("categoryList");
+        if (saved) {
+            return JSON.parse(saved);
+        } else {
+            const defaultCategories = [
+                { name: "Animals", description: "Vocabulary related to animals and wildlife." },
+                { name: "Foods", description: "Vocabulary related to food, dishes, and ingredients." },
+                { name: "Languages", description: "Vocabulary related to different languages and linguistic terms." },
+                { name: "Science", description: "Vocabulary related to science, research, and experiments." },
+                { name: "Arts", description: "Vocabulary related to visual arts, music, and literature." },
+                { name: "Sports", description: "Vocabulary related to sports and activities." },
+                { name: "Music", description: "Vocabulary related to music genres and instruments." },
+                { name: "Literature", description: "Vocabulary related to literature, books, and writing." },
+                { name: "Technology", description: "Vocabulary related to technology, gadgets, and IT." },
+                { name: "History", description: "Vocabulary related to historical events and periods." }
+            ];
+            localStorage.setItem("categoryList", JSON.stringify(defaultCategories));
+            return defaultCategories;
+        }
+    }
+
+    let categoryList = loadCategoryList();
+
+    function saveCategoryList() {
+        localStorage.setItem("categoryList", JSON.stringify(categoryList));
+    }
+
+    function openModal() {
+        addCategoryModal.style.display = "flex";
+        addCategoryModal.removeAttribute("inert"); // Enable interaction with the modal
+        document.body.classList.add("body-no-scroll");
+        document.getElementById("newCategoryName").focus(); // Focus the input field for better UX
+    }
+
+    function closeModal() {
+        addCategoryModal.style.display = "none";
+        addCategoryModal.setAttribute("inert", "true"); // Prevent interaction with the modal
+        document.body.classList.remove("body-no-scroll");
+    }
+
+    function openDeleteModal(index) {
+        deleteCategoryModal.style.display = "flex";
+        deleteCategoryModal.setAttribute("aria-hidden", "false");
+        editingIndex = index;
+    }
+
+    function closeDeleteModal() {
+        deleteCategoryModal.style.display = "none";
+        deleteCategoryModal.setAttribute("aria-hidden", "true");
+        editingIndex = null;
+    }
+
+    function resetModal() {
+        document.getElementById("newCategoryName").value = "";
+        document.getElementById("newCategoryDesc").value = "";
+        saveBtn.textContent = "Save Category";
+        deleteBtn.style.display = "none";
+    }
+
+    function filterCategories() {
+        return categoryList.filter(cat =>
+            cat.name.toLowerCase().includes(searchKeyword) ||
+            cat.description.toLowerCase().includes(searchKeyword)
+        );
+    }
+
+    function renderTable() {
+        const filteredList = filterCategories();
         categoryTableBody.innerHTML = "";
-        let start = (currentPage - 1) * itemsPerPage;
-        let paginatedData = data.slice(start, start + itemsPerPage);
 
-        paginatedData.forEach((cat, index) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${cat.name}</td>
-                <td>${cat.description}</td>
-                <td>
-                    <button onclick="editCategory(${index + start})">Sửa</button>
-                    <button onclick="deleteCategory(${index + start})">Xoá</button>
-                </td>
-            `;
-            categoryTableBody.appendChild(row);
+        const start = (currentPage - 1) * itemsPerPage;
+        const paginated = filteredList.slice(start, start + itemsPerPage);
+
+        if (paginated.length === 0) {
+            categoryTableBody.innerHTML = `<tr><td colspan="3">No categories found.</td></tr>`;
+        } else {
+            paginated.forEach((cat, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>
+                        <a href="#" class="category-link" data-category="${cat.name}">
+                            ${cat.name}
+                        </a>
+                    </td>
+                    <td>${cat.description}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editCategory(${index})">Edit</button>
+                        <button class="delete-btn" onclick="openDeleteModal(${index})">Delete</button>
+                    </td>
+                `;
+                categoryTableBody.appendChild(row);
+            });
+        }
+
+        if (pageNumberDisplay) {
+            pageNumberDisplay.textContent = currentPage;
+        }
+
+        const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+    }
+
+    window.editCategory = (index) => {
+        const cat = categoryList[index];
+        document.getElementById("newCategoryName").value = cat.name;
+        document.getElementById("newCategoryDesc").value = cat.description;
+
+        openModal();
+        saveBtn.textContent = "Update Category";
+        deleteBtn.style.display = "inline-block";
+    };
+
+    if (saveBtn) {
+        saveBtn.addEventListener("click", () => {
+            const name = document.getElementById("newCategoryName").value.trim();
+            const description = document.getElementById("newCategoryDesc").value.trim();
+
+            if (!name || !description) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const newEntry = { name, description };
+
+            if (editingIndex !== null) {
+                categoryList[editingIndex] = newEntry;
+            } else {
+                categoryList.push(newEntry);
+            }
+
+            saveCategoryList();
+            closeModal();
+            resetModal();
+            renderTable();
         });
     }
 
-    // Cập nhật bảng khi có thay đổi
-    function updateTable() {
-        let filtered = categories.filter(cat =>
-            cat.name.toLowerCase().includes(searchInput.value.toLowerCase())
-        );
-        renderTable(filtered);
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener("click", () => {
+            if (editingIndex !== null) {
+                categoryList.splice(editingIndex, 1);
+                saveCategoryList();
+                renderTable();
+                closeDeleteModal();
+            }
+        });
     }
 
-    // Sửa danh mục
-    window.editCategory = (index) => {
-        let cat = categories[index];
-        let newName = prompt("Sửa tên danh mục:", cat.name);
-        let newDesc = prompt("Sửa mô tả:", cat.description);
-        if (newName !== null) {
-            categories[index].name = newName;
-            categories[index].description = newDesc;
-            updateTable();
-        }
-    };
+    if (cancelDeleteBtn) {
+        cancelDeleteBtn.addEventListener("click", () => {
+            closeDeleteModal();
+        });
+    }
 
-    // Xoá danh mục
-    window.deleteCategory = (index) => {
-        if (confirm("Bạn có chắc muốn xoá danh mục này không?")) {
-            categories.splice(index, 1);
-            updateTable();
-        }
-    };
+    if (addCategoryBtn) {
+        addCategoryBtn.addEventListener("click", () => {
+            resetModal();
+            openModal();
+        });
+    }
 
-    // Thêm danh mục mới
-    addButton.addEventListener("click", () => {
-        let name = prompt("Nhập tên danh mục:");
-        if (!name) return;
-        const description = prompt("Nhập mô tả (không bắt buộc):");
-        categories.push({ name, description: description || "" });
-        updateTable();
-    });
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            searchKeyword = e.target.value.toLowerCase();
+            currentPage = 1;
+            renderTable();
+        });
+    }
 
-    // Lọc khi tìm kiếm
-    searchInput.addEventListener("input", updateTable);
+    if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        });
+    }
 
-    // Dữ liệu mẫu ban đầu để test
-    categories = [
-        { name: "Động vật", description: "Từ vựng liên quan đến động vật" },
-        { name: "Thức ăn", description: "Các món ăn phổ biến" },
-        { name: "Du lịch", description: "Từ vựng dùng khi đi du lịch" },
-        { name: "Công nghệ", description: "Từ vựng về công nghệ" },
-        { name: "Thiên nhiên", description: "Thiên nhiên và môi trường" },
-        { name: "Nghề nghiệp", description: "Các ngành nghề" }
-    ];
-    // Tạo các nút phân trang
-    let paginationContainer = document.createElement("div");
-    paginationContainer.style.textAlign = "center";
-    paginationContainer.style.marginTop = "20px";
-    let prevBtn = document.createElement("button");
-    prevBtn.textContent = "Trang trước";
-    prevBtn.style.marginRight = "10px";
-    let nextBtn = document.createElement("button");
-    nextBtn.textContent = "Trang sau";
-    paginationContainer.appendChild(prevBtn);
-    paginationContainer.appendChild(nextBtn);
-    document.querySelector(".container").appendChild(paginationContainer);
-    prevBtn.addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            updateTable();
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            const totalPages = Math.ceil(filterCategories().length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        });
+    }
+
+    window.addEventListener("click", function(event) {
+        if (event.target === addCategoryModal) {
+            closeModal();
         }
     });
-    nextBtn.addEventListener("click", () => {
-        let filtered = categories.filter(cat =>
-            cat.name.toLowerCase().includes(searchInput.value.toLowerCase())
-        );
-        if (currentPage * itemsPerPage < filtered.length) {
-            currentPage++;
-            updateTable();
+
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("category-link")) {
+            const selectedCategory = e.target.getAttribute("data-category");
+            localStorage.setItem("selectedCategory", selectedCategory);
+            window.location.href = "vocabulary.html";
         }
     });
-    // Gọi hàm hiển thị lần đầu
-    updateTable();
+
+    renderTable();
 });
