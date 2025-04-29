@@ -50,22 +50,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openModal() {
         addCategoryModal.style.display = "flex";
-        addCategoryModal.removeAttribute("inert"); // Enable interaction with the modal
+        addCategoryModal.removeAttribute("inert");
         document.body.classList.add("body-no-scroll");
-        document.getElementById("newCategoryName").focus(); // Focus the input field for better UX
+        document.getElementById("newCategoryName").focus();
     }
 
     function closeModal() {
         addCategoryModal.style.display = "none";
-        addCategoryModal.setAttribute("inert", "true"); // Prevent interaction with the modal
+        addCategoryModal.setAttribute("inert", "true");
         document.body.classList.remove("body-no-scroll");
     }
 
-    function openDeleteModal(index) {
+    // ⭐ Sửa đây: đưa openDeleteModal ra global
+    window.openDeleteModal = function(index) {
         deleteCategoryModal.style.display = "flex";
         deleteCategoryModal.setAttribute("aria-hidden", "false");
         editingIndex = index;
-    }
+    };
 
     function closeDeleteModal() {
         deleteCategoryModal.style.display = "none";
@@ -124,7 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
         nextBtn.disabled = currentPage === totalPages;
     }
 
-    window.editCategory = (index) => {
+    // ⭐ editCategory cũng đưa ra global
+    window.editCategory = function(index) {
         const cat = categoryList[index];
         document.getElementById("newCategoryName").value = cat.name;
         document.getElementById("newCategoryDesc").value = cat.description;

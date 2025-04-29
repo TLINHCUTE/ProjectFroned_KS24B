@@ -1,11 +1,6 @@
-#addCategoryModal {
-    display: none;
-}
-
-/* Modal container */
+/* Modal chung */
 .modal {
     display: none;
-    /* Ẩn mặc định */
     position: fixed;
     z-index: 10;
     left: 0;
@@ -13,13 +8,31 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
-    /* Hiệu ứng nền mờ */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Modal content */
+/* Modal thêm/sửa category */
+#addCategoryModal {
+    display: none;
+}
+
+/* Modal xóa category */
+.modal_delete {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+}
+
+/* Nội dung bên trong modal */
 .modal-content {
     background-color: #fff;
     padding: 20px;
@@ -29,14 +42,7 @@
     text-align: center;
 }
 
-/* Tiêu đề */
-.modal-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-/* Input fields */
+/* Input fields trong modal */
 .modal-content input[type="text"] {
     width: 100%;
     padding: 10px;
@@ -46,13 +52,14 @@
     box-sizing: border-box;
 }
 
-/* Buttons */
+/* Button container trong modal */
 .modal-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
 }
 
+/* Các nút trong modal */
 .modal-content .btn {
     flex: 1;
     padding: 10px;
@@ -62,19 +69,9 @@
     font-size: 16px;
 }
 
-.btn-update {
-    background-color: #4CAF50;
-    /* Xanh lá */
-    color: white;
-}
-
-.btn-update:hover {
-    background-color: #45a049;
-}
-
+/* Nút Xóa */
 .btn-delete {
     background-color: #f44336;
-    /* Đỏ */
     color: white;
     margin-left: 10px;
 }
@@ -83,11 +80,13 @@
     background-color: #e53935;
 }
 
-/* Close button */
-.modal .close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 22px;
-    cursor: pointer;
+/* Nút Hủy */
+.btn-cancel {
+    background-color: #ccc;
+    color: #333;
+    margin-left: 10px;
+}
+
+.btn-cancel:hover {
+    background-color: #bbb;
 }
