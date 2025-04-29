@@ -1,6 +1,4 @@
-let editingIndex = null; // Declare globally
-
-// Wait for the DOM to be fully loaded before executing any JavaScript
+let editingIndex = null;
 document.addEventListener("DOMContentLoaded", () => {
     let categoryTableBody = document.querySelector("tbody");
     let addCategoryBtn = document.getElementById("openAddCategoryModalBtn");
@@ -38,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 { name: "History", description: "Vocabulary related to historical events and periods." }
             ];
             localStorage.setItem("categoryList", JSON.stringify(defaultCategories));
+            const defaultCategoryNames = defaultCategories.map(cat => cat.name);
+            localStorage.setItem("categories", JSON.stringify(defaultCategoryNames));
             return defaultCategories;
         }
     }
@@ -46,31 +46,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function saveCategoryList() {
         localStorage.setItem("categoryList", JSON.stringify(categoryList));
+        const categories = categoryList.map(cat => cat.name);
+        localStorage.setItem("categories", JSON.stringify(categories));
     }
 
     function openModal() {
         addCategoryModal.style.display = "flex";
-        addCategoryModal.removeAttribute("inert");
         document.body.classList.add("body-no-scroll");
         document.getElementById("newCategoryName").focus();
     }
 
     function closeModal() {
         addCategoryModal.style.display = "none";
-        addCategoryModal.setAttribute("inert", "true");
         document.body.classList.remove("body-no-scroll");
     }
 
-    // ⭐ Sửa đây: đưa openDeleteModal ra global
     window.openDeleteModal = function(index) {
         deleteCategoryModal.style.display = "flex";
-        deleteCategoryModal.setAttribute("aria-hidden", "false");
         editingIndex = index;
     };
 
     function closeDeleteModal() {
         deleteCategoryModal.style.display = "none";
-        deleteCategoryModal.setAttribute("aria-hidden", "true");
         editingIndex = null;
     }
 
@@ -99,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
             categoryTableBody.innerHTML = `<tr><td colspan="3">No categories found.</td></tr>`;
         } else {
             paginated.forEach((cat, index) => {
+                const realIndex = start + index;
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>
@@ -108,26 +106,24 @@ document.addEventListener("DOMContentLoaded", () => {
                     </td>
                     <td>${cat.description}</td>
                     <td>
-                        <button class="edit-btn" onclick="editCategory(${index})">Edit</button>
-                        <button class="delete-btn" onclick="openDeleteModal(${index})">Delete</button>
+                        <button class="edit-btn" onclick="editCategory(${realIndex})">Edit</button>
+                        <button class="delete-btn" onclick="openDeleteModal(${realIndex})">Delete</button>
                     </td>
                 `;
                 categoryTableBody.appendChild(row);
             });
         }
 
-        if (pageNumberDisplay) {
-            pageNumberDisplay.textContent = currentPage;
-        }
+        if (pageNumberDisplay) pageNumberDisplay.textContent = currentPage;
 
         const totalPages = Math.ceil(filteredList.length / itemsPerPage);
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === totalPages;
     }
 
-    // ⭐ editCategory cũng đưa ra global
     window.editCategory = function(index) {
         const cat = categoryList[index];
+        editingIndex = index;
         document.getElementById("newCategoryName").value = cat.name;
         document.getElementById("newCategoryDesc").value = cat.description;
 
@@ -155,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             saveCategoryList();
+            editingIndex = null; // Reset sau khi lưu
             closeModal();
             resetModal();
             renderTable();
@@ -168,6 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveCategoryList();
                 renderTable();
                 closeDeleteModal();
+                editingIndex = null;
             }
         });
     }
@@ -193,24 +191,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    if (prevBtn) {
-        prevBtn.addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                renderTable();
-            }
-        });
-    }
+    if (prevBtn) prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    });
 
-    if (nextBtn) {
-        nextBtn.addEventListener("click", () => {
-            const totalPages = Math.ceil(filterCategories().length / itemsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderTable();
-            }
-        });
-    }
+    if (nextBtn) nextBtn.addEventListener("click", () => {
+        const totalPages = Math.ceil(filterCategories().length / itemsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+        }
+    });
 
     window.addEventListener("click", function(event) {
         if (event.target === addCategoryModal) {
@@ -225,6 +219,5 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "vocabulary.html";
         }
     });
-
     renderTable();
 });

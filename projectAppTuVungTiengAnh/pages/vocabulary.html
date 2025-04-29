@@ -6,6 +6,12 @@
     <title>VocabApp - Vocabulary</title>
     <link rel="stylesheet" href="../css/vocabulary.css">
     <link rel="stylesheet" href="../css/home.css">
+    <style>
+        body {
+            background: url('../assets/imgs/tuvung.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -33,7 +39,11 @@
             <form id="vocabForm">
                 <input type="text" id="newWord" placeholder="Enter word">
                 <input type="text" id="newMeaning" placeholder="Enter meaning">
-                <input type="text" id="newCategory" placeholder="Enter category">
+                <div class="form-group">
+                    <label for="newCategory">Category</label>
+                    <select id="newCategory" class="form-control"></select>
+                </div>
+                
                 <input type="text" id="newExample" placeholder="Enter example (optional)">
                 <div class="modal_vocabulary-buttons">
                     <button id="saveVocabBtn" class="btn-save">Save</button>
@@ -78,8 +88,14 @@
         <span class="page-number">1</span>
         <button class="next-btn">Next</button>
     </div>
+    <footer style="text-align: center; margin-top: 40px;">
+        © 2024 VocabApp. All rights reserved.
+    </footer>
 
     <!-- Add this script just before the closing body tag -->
-    <script src="../js/vocabulary.js"></script>
+<script src="../js/authGuard.js"></script>
+<script src="../js/vocabulary.js"></script>
+<script src="../js/auth.js"></script>
+
 </body>
 </html>
