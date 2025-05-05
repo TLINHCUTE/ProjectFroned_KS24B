@@ -1,0 +1,99 @@
+.flashcard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.flashcard {
+    width: 220px;
+    height: 160px;
+    perspective: 1000px;
+    position: relative;
+}
+
+.flashcard .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.flashcard.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    backface-visibility: hidden;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    background-color: #f8f8f8;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.flashcard.learned {
+    border: 2px solid green;
+    box-shadow: 0 0 10px green;
+}
+
+.mark-btn {
+    margin-top: 5px;
+    width: 100%;
+    padding: 6px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.mark-btn:hover {
+    background-color: #0056b3;
+}
+body {
+    background: url('../assets/imgs/flashcard.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+#filterStatus{
+    padding: 5px; 
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 15px;
+}
+label{
+    color: rgb(9, 1, 1);
+    font-size: 20px;
+}
+.flashcard.pastel-1 .card-front, .flashcard.pastel-1 .card-back {
+    background-color: #fcefe6;
+}
+.flashcard.pastel-2 .card-front, .flashcard.pastel-2 .card-back {
+    background-color: #e6f7fc;
+}
+.flashcard.pastel-3 .card-front, .flashcard.pastel-3 .card-back {
+    background-color: #f3e6fc;
+}
+.flashcard.pastel-4 .card-front, .flashcard.pastel-4 .card-back {
+    background-color: #e6fcef;
+}
+.flashcard.pastel-5 .card-front, .flashcard.pastel-5 .card-back {
+    background-color: #fff7e6;
+}

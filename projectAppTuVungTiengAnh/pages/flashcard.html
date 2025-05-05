@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocabApp - Learn Vocabulary</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/flashcard.css">
+    <!-- <style>
+        body {
+            background: url('../assets/imgs/flashcard.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style> -->
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="brand">VocabApp</div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="categories.html">Categories</a>
+            <a href="vocabulary.html">Vocabulary</a>
+            <a href="flashcard.html">Flashcards</a>
+            <a href="quiz.html">Quiz</a>
+            <!-- HTML -->
+            <button id="logoutBtn" onclick="logout()">Đăng xuất</button>
+
+        </div>
+    </nav>
+    <div>
+        <label for="filterStatus">Lọc: </label>
+        <select id="filterStatus">
+            <option value="all">Tất cả</option>
+            <option value="learned">Đã thuộc</option>
+            <option value="notLearned">Chưa thuộc</option>
+        </select>
+    </div>
+    
+    <div id="flashcardContainer" class="flashcard-container"></div>
+    
+    
+    <footer>
+        © 2024 VocabApp. All rights reserved.
+    </footer>
+    <script src="../js/flashcard.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/authGuard.js"></script>
+</body>
+
+</html>

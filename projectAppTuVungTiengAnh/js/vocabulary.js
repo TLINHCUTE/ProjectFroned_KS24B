@@ -50,10 +50,10 @@ function clearForm() {
 
 function saveVocab(event) {
     event.preventDefault();
-    const word = document.getElementById('newWord').value.trim();
-    const meaning = document.getElementById('newMeaning').value.trim();
-    const category = document.getElementById('newCategory').value;
-    const example = document.getElementById('newExample').value.trim();
+    let word = document.getElementById('newWord').value.trim();
+    let meaning = document.getElementById('newMeaning').value.trim();
+    let category = document.getElementById('newCategory').value;
+    let example = document.getElementById('newExample').value.trim();
 
     if (word && meaning && category) {
         const newVocab = { word, meaning, category, example };
@@ -124,20 +124,31 @@ function renderVocabTable(page = 1) {
 }
 
 function renderPagination() {
-    const totalPages = Math.ceil(vocabList.length / itemsPerPage);
-    const pageNumberElement = document.querySelector('.page-number');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
+    let totalPages = Math.ceil(vocabList.length / itemsPerPage);
+    let pageNumbersContainer = document.querySelector('.page-numbers');
+    let prevBtn = document.querySelector('.prev-btn');
+    let nextBtn = document.querySelector('.next-btn');
 
-    if (!pageNumberElement || !prevBtn || !nextBtn) return;
+    if (!pageNumbersContainer || !prevBtn || !nextBtn) return;
 
-    pageNumberElement.textContent = currentPage;
+    pageNumbersContainer.innerHTML = '';
+
+    for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.classList.add('page-number');
+        if (i === currentPage) pageBtn.classList.add('active');
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => renderVocabTable(i);
+        pageNumbersContainer.appendChild(pageBtn);
+    }
+
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
 
     prevBtn.onclick = () => renderVocabTable(currentPage - 1);
     nextBtn.onclick = () => renderVocabTable(currentPage + 1);
 }
+
 
 function searchVocabulary(event) {
     const query = event.target.value.toLowerCase();

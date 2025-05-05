@@ -494,7 +494,7 @@ footer {
 
 /* Header bảng */
 .vocab-table thead {
-    background-color: #2f80ed;
+    background-color: #fdfdfd;
     color: white;
 }
 
@@ -507,12 +507,12 @@ footer {
 
 /* Hàng lẻ trắng, hàng chẵn màu xám nhẹ */
 .vocab-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #da12b9;
 }
 
 /* Hover từng dòng */
 .vocab-table tbody tr:hover {
-    background-color: #e6f0ff;
+    background-color: #ea00d6;
 }
 
 /* Nút Edit / Delete */
@@ -536,4 +536,43 @@ footer {
 
 .vocab-table .btn-delete {
     background-color: #f44336;
+}
+.vocab-table tr{
+    background-color: #f352eb;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.page-number {
+    padding: 6px 12px;
+    border: none;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.page-number.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.prev-btn, .next-btn {
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.prev-btn:disabled, .next-btn:disabled {
+    background-color: #aaa;
+    cursor: default;
 }

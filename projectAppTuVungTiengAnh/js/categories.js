@@ -1,4 +1,8 @@
 let editingIndex = null;
+let itemsPerPage = 5;
+let currentPage = 1;
+let searchKeyword = "";
+
 document.addEventListener("DOMContentLoaded", () => {
     let categoryTableBody = document.querySelector("tbody");
     let addCategoryBtn = document.getElementById("openAddCategoryModalBtn");
@@ -7,16 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let nextBtn = document.querySelector(".next-btn");
     let pageNumberDisplay = document.querySelector(".page-number");
 
+    let pageNumbersContainer = document.querySelector(".page-numbers");
+
     let addCategoryModal = document.getElementById("addCategoryModal");
     let deleteCategoryModal = document.getElementById("deleteCategoryModal");
     let confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
     let cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     let saveBtn = document.getElementById("saveCategoryBtn");
     let deleteBtn = document.getElementById("deleteCategoryBtn");
-
-    let itemsPerPage = 5;
-    let currentPage = 1;
-    let searchKeyword = "";
 
     function loadCategoryList() {
         const saved = localStorage.getItem("categoryList");
@@ -85,6 +87,26 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+    function updatePaginationControls(totalPages) {
+        const pageNumbersContainer = document.querySelector(".page-numbers");
+        pageNumbersContainer.innerHTML = "";
+    
+        for (let i = 1; i <= totalPages; i++) {
+            const pageSpan = document.createElement("span");
+            pageSpan.textContent = i;
+            pageSpan.classList.add("page-number");
+            if (i === currentPage) {
+                pageSpan.classList.add("active");
+            }
+            pageSpan.addEventListener("click", () => {
+                currentPage = i;
+                renderTable();
+            });
+            pageNumbersContainer.appendChild(pageSpan);
+        }
+    }
+    
+
     function renderTable() {
         const filteredList = filterCategories();
         categoryTableBody.innerHTML = "";
@@ -99,17 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const realIndex = start + index;
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>
-                        <a href="#" class="category-link" data-category="${cat.name}">
-                            ${cat.name}
-                        </a>
-                    </td>
+                    <td><a href="#" class="category-link" data-category="${cat.name}">${cat.name}</a></td>
                     <td>${cat.description}</td>
                     <td>
                         <button class="edit-btn" onclick="editCategory(${realIndex})">Edit</button>
                         <button class="delete-btn" onclick="openDeleteModal(${realIndex})">Delete</button>
-                    </td>
-                `;
+                    </td>`;
                 categoryTableBody.appendChild(row);
             });
         }
@@ -119,6 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const totalPages = Math.ceil(filteredList.length / itemsPerPage);
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === totalPages;
+        updatePaginationControls(totalPages);
+        
     }
 
     window.editCategory = function(index) {
@@ -151,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             saveCategoryList();
-            editingIndex = null; // Reset sau khi lưu
+            editingIndex = null;
             closeModal();
             resetModal();
             renderTable();
@@ -219,5 +238,6 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "vocabulary.html";
         }
     });
+
     renderTable();
 });
