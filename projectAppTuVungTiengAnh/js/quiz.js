@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         quizContainer.innerHTML = '';
         resultDisplay.innerHTML = `Hoàn thành! Bạn đúng ${score}/${totalQuestions}`;
         saveResult(score, totalQuestions);
+        showCongratsModal();  // 👉 Hiển thị modal chúc mừng
     }
 
     function saveResult(score, total) {
@@ -74,5 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('quizResults', JSON.stringify(quizResults));
     }
 
+    function showCongratsModal() {
+        const modal = document.getElementById("congratsModal");
+        if (modal) {
+            modal.style.display = "flex";
+        }
+    }
+
     renderQuestion(currentQuestion);
 });
+
+// Hàm đóng modal chúc mừng (nên nằm trong cùng file hoặc trong thẻ script)
+function closeCongratsModal() {
+    const modal = document.getElementById("congratsModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}

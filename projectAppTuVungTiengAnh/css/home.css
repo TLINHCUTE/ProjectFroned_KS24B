@@ -413,3 +413,20 @@ footer {
     background-color: #222;
     color: white;
 }
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #ccc;
+}
+.brand a{
+    text-decoration: none;
+    color: rgb(42, 228, 39);
+    font-weight: bold;
+    transition: color 0.3s;
+    font-size: 20px;
+}
