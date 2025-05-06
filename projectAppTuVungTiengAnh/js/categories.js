@@ -9,8 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let searchInput = document.querySelector(".search-bar");
     let prevBtn = document.querySelector(".prev-btn");
     let nextBtn = document.querySelector(".next-btn");
-    let pageNumberDisplay = document.querySelector(".page-number");
-
     let pageNumbersContainer = document.querySelector(".page-numbers");
 
     let addCategoryModal = document.getElementById("addCategoryModal");
@@ -87,25 +85,23 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    function updatePaginationControls(totalPages) {
-        const pageNumbersContainer = document.querySelector(".page-numbers");
+    function renderPagination(totalPages) {
         pageNumbersContainer.innerHTML = "";
-    
+
         for (let i = 1; i <= totalPages; i++) {
-            const pageSpan = document.createElement("span");
-            pageSpan.textContent = i;
-            pageSpan.classList.add("page-number");
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            btn.className = "page-number-btn";
             if (i === currentPage) {
-                pageSpan.classList.add("active");
+                btn.classList.add("active");
             }
-            pageSpan.addEventListener("click", () => {
+            btn.addEventListener("click", () => {
                 currentPage = i;
                 renderTable();
             });
-            pageNumbersContainer.appendChild(pageSpan);
+            pageNumbersContainer.appendChild(btn);
         }
     }
-    
 
     function renderTable() {
         const filteredList = filterCategories();
@@ -131,13 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        if (pageNumberDisplay) pageNumberDisplay.textContent = currentPage;
-
         const totalPages = Math.ceil(filteredList.length / itemsPerPage);
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages;
-        updatePaginationControls(totalPages);
-        
+        renderPagination(totalPages);
     }
 
     window.editCategory = function(index) {

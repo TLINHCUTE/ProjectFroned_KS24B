@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VocabApp - Vocabulary</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/quiz.css">
+    <style>
+        body {
+            background: url('../assets/imgs/quiz2.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">VocabApp</div>
+        <div class="nav-links">
+            <a href="categories.html">Categories</a>
+            <a href="vocabulary.html">Vocabulary</a>
+            <a href="flashcard.html">Flashcards</a>
+            <a href="quiz.html">Quiz</a>
+            <button id="logoutBtn" onclick="logout()">Đăng xuất</button>
+        </div>
+    </nav>
+    <div id="quizContainer"></div>
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+    <div id="result"></div>
+    
+
+    <footer style="text-align: center; margin-top: 40px;">
+        © 2024 VocabApp. All rights reserved.
+    </footer>
+
+    <!-- Add this script just before the closing body tag -->
+<script src="../js/authGuard.js"></script>
+<script src="../js/quiz.js"></script>
+<script src="../js/auth.js"></script>
+
+</body>
+</html>

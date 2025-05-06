@@ -50,6 +50,7 @@ function clearForm() {
 
 function saveVocab(event) {
     event.preventDefault();
+
     let word = document.getElementById('newWord').value.trim();
     let meaning = document.getElementById('newMeaning').value.trim();
     let category = document.getElementById('newCategory').value;
@@ -64,13 +65,20 @@ function saveVocab(event) {
             vocabList.push(newVocab);
         }
 
+        // Reset editingIndex về null sau khi lưu
+        editingIndex = null;
+
         localStorage.setItem('vocabList', JSON.stringify(vocabList));
-        renderVocabTable();
+
+        const totalPages = Math.ceil(vocabList.length / itemsPerPage);
+        renderVocabTable(totalPages);  // Chuyển đến trang cuối để thấy từ mới
+
         closeVocabModal();
     } else {
         alert("Please fill all fields and select a category.");
     }
 }
+
 
 function updateCategoryFilter() {
     const categoryFilter = document.getElementById('categoryFilter');
@@ -133,7 +141,16 @@ function renderPagination() {
 
     pageNumbersContainer.innerHTML = '';
 
-    for (let i = 1; i <= totalPages; i++) {
+    // Hiển thị nhiều số trang gần trang hiện tại
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.classList.add('page-number');
         if (i === currentPage) pageBtn.classList.add('active');
@@ -142,12 +159,29 @@ function renderPagination() {
         pageNumbersContainer.appendChild(pageBtn);
     }
 
+    // Previous / Next logic
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
-
     prevBtn.onclick = () => renderVocabTable(currentPage - 1);
     nextBtn.onclick = () => renderVocabTable(currentPage + 1);
+
+    // Go to page input
+    const goToPageBtn = document.getElementById('goToPageBtn');
+    const goToPageInput = document.getElementById('goToPageInput');
+
+    if (goToPageBtn && goToPageInput) {
+        goToPageBtn.onclick = () => {
+            const pageNum = parseInt(goToPageInput.value);
+            if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+                renderVocabTable(pageNum);
+            } else {
+                alert(`Please enter a number between 1 and ${totalPages}.`);
+            }
+        };
+    }
 }
+
+
 
 
 function searchVocabulary(event) {

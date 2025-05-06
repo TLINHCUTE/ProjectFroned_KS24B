@@ -1,0 +1,117 @@
+/* Container chính */
+#quizContainer {
+    color: #2c3e50; /* Màu chữ chính: xanh đậm */
+}
+
+/* Câu hỏi */
+.question {
+    color: #1a237e; /* Xanh navy đậm hơn để nổi bật */
+}
+
+/* Nút lựa chọn */
+.option-btn {
+    color: #333; /* Màu chữ tối vừa phải */
+    background-color: #f9f9f9;
+    border: 2px solid #bbb;
+    transition: all 0.3s ease;
+}
+.option-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Đúng / Sai */
+.option-btn.correct {
+    background-color: #4CAF50 !important;
+    color: #ffffff; /* Trắng nổi bật */
+    border-color: #4CAF50;
+}
+.option-btn.incorrect {
+    background-color: #f44336 !important;
+    color: #ffffff; /* Trắng nổi bật */
+    border-color: #f44336;
+}
+
+/* Kết quả */
+#result {
+    color: #2e7d32; /* Xanh lá đậm */
+}
+/* Container chính của quiz */
+#quizContainer {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Thanh tiến trình */
+#progressBarContainer {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #e0e0e0;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+#progressBar {
+    height: 100%;
+    background: linear-gradient(to right, #4CAF50, #81C784);
+    transition: width 0.4s ease;
+}
+
+/* Câu hỏi */
+.question {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 25px;
+    background-color: #e3f2fd;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+/* Tuỳ chọn */
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.option-btn {
+    background-color: #f9f9f9;
+    border: 2px solid #bbb;
+    padding: 12px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    font-weight: 500;
+}
+.option-btn:hover {
+    background-color: #e6e6e6;
+}
+
+/* Trạng thái đúng sai */
+.option-btn.correct {
+    background-color: #4CAF50 !important;
+    color: white;
+    border-color: #4CAF50;
+}
+.option-btn.incorrect {
+    background-color: #f44336 !important;
+    color: white;
+    border-color: #f44336;
+}
+
+/* Kết quả cuối */
+#result {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 30px;
+}

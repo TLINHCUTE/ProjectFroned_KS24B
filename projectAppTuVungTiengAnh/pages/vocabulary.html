@@ -18,9 +18,8 @@
     <nav class="navbar">
         <div class="brand">VocabApp</div>
         <div class="nav-links">
-            <a href="dashboard.html">Dashboard</a>
             <a href="categories.html">Categories</a>
-            <a href="vocabulary.html" class="active">Vocabulary</a>
+            <a href="vocabulary.html">Vocabulary</a>
             <a href="flashcard.html">Flashcards</a>
             <a href="quiz.html">Quiz</a>
             <button id="logoutBtn" onclick="logout()">Đăng xuất</button>
@@ -82,13 +81,9 @@
         <tbody></tbody>
     </table>
 
-    <!-- Pagination (Optional) -->
-    <div class="pagination">
+    <div class="pagination-controls">
         <button class="prev-btn">Previous</button>
-        <span class="page-number">1</span>
-        <span class="page-number">2</span>
-        <span class="page-number">3</span>
-        <span class="page-number">4</span>
+        <span class="page-numbers"></span>
         <button class="next-btn">Next</button>
     </div>
     <footer style="text-align: center; margin-top: 40px;">
