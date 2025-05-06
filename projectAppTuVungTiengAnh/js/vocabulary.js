@@ -74,9 +74,7 @@ function saveVocab(event) {
         renderVocabTable(totalPages);  // Chuyển đến trang cuối để thấy từ mới
 
         closeVocabModal();
-    } else {
-        alert("Please fill all fields and select a category.");
-    }
+    } 
 }
 
 
@@ -262,6 +260,22 @@ function confirmDelete() {
 function cancelDelete() {
     document.getElementById('deleteVocabModal').style.display = 'none';
 }
+document.getElementById("saveVocabBtn").addEventListener("click", function (e) {
+    e.preventDefault();
+    const word = document.getElementById("newWord").value.trim();
+    const meaning = document.getElementById("newMeaning").value.trim();
+    const category = document.getElementById("newCategory").value.trim();
+    const message = document.getElementById("vocabMessage");
+
+    if (!word || !meaning || !category) {
+        message.textContent = "Vui lòng nhập đầy đủ thông tin từ vựng!";
+        return;
+    }
+
+    message.textContent = ""; // Xóa thông báo nếu hợp lệ
+
+    // Xử lý lưu từ vựng...
+});
 
 // Gán các hàm ra window để HTML gọi được
 window.searchVocabulary = searchVocabulary;

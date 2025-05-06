@@ -148,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const description = document.getElementById("newCategoryDesc").value.trim();
 
             if (!name || !description) {
-                alert("Please fill in all fields.");
                 return;
             }
 
@@ -221,6 +220,21 @@ document.addEventListener("DOMContentLoaded", () => {
             closeModal();
         }
     });
+    document.getElementById("saveCategoryBtn").addEventListener("click", function () {
+        const name = document.getElementById("newCategoryName").value.trim();
+        const desc = document.getElementById("newCategoryDesc").value.trim();
+        const message = document.getElementById("categoryMessage");
+    
+        if (!name || !desc) {
+            message.textContent = "Vui lòng nhập đầy đủ tên và mô tả danh mục!";
+            return;
+        }
+    
+        message.textContent = ""; // Xóa thông báo nếu hợp lệ
+    
+        // Thêm hoặc cập nhật danh mục ở đây...
+    });
+    
 
     document.addEventListener("click", function(e) {
         if (e.target.classList.contains("category-link")) {

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.textContent = passwordInput.type === "password" ? "Hiện mật khẩu" : "Ẩn mật khẩu";
         });
     }
-    
+
     // Đăng ký tài khoản
     window.register = function () {
         const firstName = document.getElementById("firstName").value.trim();
@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const confirmPassword = document.getElementById("confirmPassword").value.trim();
         const message = document.getElementById("registerMessage");
 
-        // Kiểm tra thông tin nhập
         if (!firstName || !lastName || !email || !password || !confirmPassword) {
             message.textContent = "Vui lòng điền đầy đủ thông tin!";
             return;
@@ -34,11 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Lưu thông tin người dùng vào localStorage
         const userData = { firstName, lastName, email, password };
         localStorage.setItem("registeredUser", JSON.stringify(userData));
 
-        // Hiển thị thông báo thành công và chuyển hướng đến login.html
         message.style.color = "green";
         message.textContent = "Đăng ký thành công! Chuyển đến trang đăng nhập...";
         setTimeout(() => {
@@ -52,10 +49,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById("loginPassword").value.trim();
         const message = document.getElementById("loginMessage");
 
-        // Lấy thông tin người dùng đã đăng ký từ localStorage
         const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
 
-        // Kiểm tra thông tin nhập
         if (!email || !password) {
             message.textContent = "Vui lòng nhập đầy đủ thông tin!";
             return;
@@ -66,10 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Lưu trạng thái đăng nhập
         localStorage.setItem("loggedInUser", JSON.stringify(registeredUser));
 
-        // Hiển thị thông báo thành công & chuyển hướng
         message.style.color = "green";
         message.textContent = "Đăng nhập thành công! Đang chuyển hướng...";
         setTimeout(() => {
@@ -83,20 +76,34 @@ document.addEventListener("DOMContentLoaded", function () {
         const logoutBtn = document.getElementById("logoutBtn");
 
         if (loggedInUser && logoutBtn) {
-            logoutBtn.style.display = "block"; // Hiển thị nút đăng xuất nếu người dùng đã đăng nhập
+            logoutBtn.style.display = "block";
+
             logoutBtn.addEventListener("click", function () {
-                logout();
+                const modal = document.getElementById("logoutModal");
+                if (modal) {
+                    modal.style.display = "flex";
+                }
+
+                const confirmBtn = document.getElementById("confirmLogout");
+                const cancelBtn = document.getElementById("cancelLogout");
+
+                if (confirmBtn && cancelBtn) {
+                    confirmBtn.onclick = function () {
+                        logout();
+                    };
+                    cancelBtn.onclick = function () {
+                        modal.style.display = "none";
+                    };
+                }
             });
         }
     }
 
     // Đăng xuất tài khoản
     function logout() {
-        localStorage.removeItem("loggedInUser"); // Xóa trạng thái đăng nhập
-        alert("Bạn đã đăng xuất thành công!");
-        window.location.href = "login.html"; // Chuyển hướng về trang đăng nhập
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
     }
 
-    // Kiểm tra trạng thái đăng nhập mỗi khi trang tải
     checkLoginStatus();
 });
